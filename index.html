@@ -3,49 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Informatika Kelas 9 - Sistem Komputer</title>
-    
-    <!-- Tailwind CSS -->
+    <title>Pembelajaran Informatika - Sistem Komputer</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Google Fonts: Fira Code -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
-    
-    <!-- Custom CSS Styles -->
     <style>
         :root {
-            --cyan-neon: #00ffff;
-            --background-dark: #000000;
-            --text-light: #ffffff;
-            --glass-bg: rgba(20, 20, 20, 0.3);
-            --glass-border: rgba(255, 255, 255, 0.1);
+            --bg-dark: #000000;
+            --cyan-neon: #00FFFF;
+            --text-light: #FFFFFF;
         }
 
         body {
             font-family: 'Fira Code', monospace;
-            background-color: var(--background-dark);
+            background-color: var(--bg-dark);
             color: var(--text-light);
             overflow-x: hidden;
         }
-
-        /* Video Background */
+        
         #video-bg {
             position: fixed;
-            top: 50%;
-            left: 50%;
-            min-width: 100%;
-            min-height: 100%;
-            width: auto;
-            height: auto;
-            z-index: -100;
-            transform: translateX(-50%) translateY(-50%);
-            opacity: 0.3;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             object-fit: cover;
+            z-index: -1;
+            opacity: 0.3;
         }
         
-        /* Glassmorphism Effect */
+        /* Glassmorphism Effect REVISED to be transparent with outline */
         .glassmorphism {
             background: transparent;
             backdrop-filter: none;
@@ -61,103 +49,85 @@
                 0 0 5px var(--cyan-neon),
                 0 0 10px var(--cyan-neon),
                 0 0 20px var(--cyan-neon),
-                0 0 40px var(--cyan-neon);
+                0 0 40px #00aaff,
+                0 0 80px #00aaff;
         }
         
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #1a1a1a;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--cyan-neon);
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #00dddd;
-        }
-
-        /* Sidebar Styling */
-        #sidebar {
-            transition: transform 0.3s ease-in-out;
-        }
-
-        /* Submenu Styling */
-        .submenu {
-            display: none;
-            padding-left: 1.5rem;
-        }
-        
-        .submenu-toggle.active + .submenu {
-            display: block;
-        }
-        
-        /* Content Section Styling */
         .content-section {
             display: none;
         }
+        
         .content-section.active {
             display: block;
+            animation: fadeIn 0.5s ease-in-out;
         }
 
-        /* Responsive Video Embed */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .sidebar-scroll::-webkit-scrollbar {
+            width: 5px;
+        }
+        .sidebar-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .sidebar-scroll::-webkit-scrollbar-thumb {
+            background: var(--cyan-neon);
+            border-radius: 5px;
+        }
+
+        /* Responsive Iframe */
         .video-container {
             position: relative;
             width: 100%;
-            padding-top: 45%; /* Aspect Ratio: height is 45% of width */
             overflow: hidden;
-            border-radius: 8px;
-            border: 1px solid var(--cyan-neon);
+            padding-top: 56.25%; /* 16:9 Aspect Ratio */
         }
-
+        .video-container.custom-ratio {
+            padding-top: 45%; /* Custom ratio */
+        }
         .video-container iframe {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-        }
-
-        /* Quiz Styling */
-        .quiz-option.selected {
-            background-color: var(--cyan-neon);
-            color: var(--background-dark);
-            border-color: var(--cyan-neon);
+            border: 0;
         }
         
+        /* Slider styles */
+        .slider-container {
+            position: relative;
+            width: 100%;
+        }
+        .slider-wrapper {
+            display: flex;
+            transition: transform 0.3s ease-in-out;
+        }
+        .slide {
+            min-width: 100%;
+            box-sizing: border-box;
+        }
+        .slider-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 10;
+        }
+
         /* Leaderboard Podium */
         .podium-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center; /* Menambahkan ini untuk centering */
+            justify-content: center;
             text-align: center;
         }
         .podium-1 { order: 2; height: 12rem; background: linear-gradient(145deg, #ffd700, #f0c400); }
         .podium-2 { order: 1; height: 10rem; background: linear-gradient(145deg, #c0c0c0, #b0b0b0); }
-        .podium-3 { order: 3; height: 8rem;  background: linear-gradient(145deg, #cd7f32, #b8732e); }
-
-        /* Puzzle Game */
-        #puzzle-container {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 2px;
-            border: 2px solid var(--cyan-neon);
-        }
-        .puzzle-piece {
-            width: 100%;
-            aspect-ratio: 1 / 1;
-            background-size: 400% 300%;
-            cursor: pointer;
-            transition: transform 0.2s ease;
-        }
-        .puzzle-piece.selected {
-            transform: scale(0.9);
-            border: 2px solid yellow;
-            box-shadow: 0 0 10px yellow;
-        }
+        .podium-3 { order: 3; height: 10rem; background: linear-gradient(145deg, #cd7f32, #b8732e); }
 
     </style>
 </head>
@@ -165,75 +135,87 @@
 
     <!-- Background Video -->
     <video autoplay muted loop id="video-bg">
-        <!-- GANTI URL DI BAWAH INI -->
         <source src="https://raw.githubusercontent.com/xiroro-ab/bab3-sk-kelas9/main/background_2.mp4" type="video/mp4">
         Your browser does not support the video tag.
     </video>
 
     <!-- Sidebar -->
-    <nav id="sidebar" class="glassmorphism fixed top-0 left-0 h-full w-64 md:w-72 z-50 transform -translate-x-full md:translate-x-0 flex flex-col p-4 shadow-lg shadow-cyan-500/10">
-        <h1 class="text-2xl font-bold neon-glow text-center mb-8">Sistem Komputer</h1>
+    <!-- REVISED: Default state is hidden on all screens -->
+    <nav id="sidebar" class="glassmorphism fixed top-0 left-0 h-full w-72 z-50 transform -translate-x-full flex flex-col p-4 shadow-lg shadow-cyan-500/10 transition-transform duration-300">
+        <div class="text-2xl font-bold neon-glow text-center mb-8">
+            <a href="#" class="nav-link" data-target="beranda">Informatika KLS 9</a>
+        </div>
         
-        <div class="flex-grow overflow-y-auto pr-2">
+        <div class="flex-grow overflow-y-auto sidebar-scroll pr-2">
             <ul class="space-y-2">
-                <li><a href="#beranda" class="nav-link flex items-center p-2 rounded-lg hover:bg-cyan-500/20 transition-colors duration-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-                    Beranda</a></li>
-                <li><a href="#kompetensi" class="nav-link flex items-center p-2 rounded-lg hover:bg-cyan-500/20 transition-colors duration-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
-                    Kompetensi</a></li>
-                <li>
-                    <a href="#" class="submenu-toggle flex items-center justify-between p-2 rounded-lg hover:bg-cyan-500/20 transition-colors duration-200">
-                        <div class="flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v11.494m-9-5.747h18"/></svg>
-                            Materi
-                        </div>
-                        <svg class="h-4 w-4 transform transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                 <li>
+                    <a href="#" class="nav-link flex items-center p-2 rounded-lg hover:bg-cyan-500/20" data-target="beranda">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                        <span class="ml-3">Beranda</span>
                     </a>
-                    <ul class="submenu">
-                        <li><a href="#materi1" class="nav-link block p-2 rounded-lg hover:bg-cyan-500/20 transition-colors duration-200">Booting & CPU</a></li>
-                        <li><a href="#materi2" class="nav-link block p-2 rounded-lg hover:bg-cyan-500/20 transition-colors duration-200">Konversi Bilangan</a></li>
-                        <li><a href="#materi3" class="nav-link block p-2 rounded-lg hover:bg-cyan-500/20 transition-colors duration-200">Gerbang Logika</a></li>
+                </li>
+                <li>
+                    <a href="#" class="nav-link flex items-center p-2 rounded-lg hover:bg-cyan-500/20" data-target="kompetensi">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                        <span class="ml-3">Kompetensi</span>
+                    </a>
+                </li>
+                <li>
+                    <button class="submenu-toggle w-full flex items-center p-2 rounded-lg hover:bg-cyan-500/20 text-left">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v11.494m-9-5.747h18"></path></svg>
+                        <span class="ml-3 flex-1">Materi</span>
+                        <svg class="w-4 h-4 transition-transform" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    </button>
+                    <ul class="submenu hidden mt-1 space-y-1 pl-6">
+                        <li><a href="#" class="nav-link block p-2 rounded-lg hover:bg-cyan-500/20" data-target="materi1">Materi 1: Booting & CPU</a></li>
+                        <li><a href="#" class="nav-link block p-2 rounded-lg hover:bg-cyan-500/20" data-target="materi2">Materi 2: Konversi Bilangan</a></li>
+                        <li><a href="#" class="nav-link block p-2 rounded-lg hover:bg-cyan-500/20" data-target="materi3">Materi 3: Gerbang Logika</a></li>
                     </ul>
                 </li>
-                <li><a href="#kuis" class="nav-link flex items-center p-2 rounded-lg hover:bg-cyan-500/20 transition-colors duration-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    Kuis</a></li>
-                <li><a href="#peringkat" class="nav-link flex items-center p-2 rounded-lg hover:bg-cyan-500/20 transition-colors duration-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                    Papan Peringkat</a></li>
                 <li>
-                    <a href="#" class="submenu-toggle flex items-center justify-between p-2 rounded-lg hover:bg-cyan-500/20 transition-colors duration-200">
-                        <div class="flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                            Games
-                        </div>
-                        <svg class="h-4 w-4 transform transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                    <a href="#" class="nav-link flex items-center p-2 rounded-lg hover:bg-cyan-500/20" data-target="kuis">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span class="ml-3">Kuis</span>
                     </a>
-                    <ul class="submenu">
-                        <li><a href="#game1" class="nav-link block p-2 rounded-lg hover:bg-cyan-500/20 transition-colors duration-200">Puzzle Komponen</a></li>
-                        <li><a href="#game2" class="nav-link block p-2 rounded-lg hover:bg-cyan-500/20 transition-colors duration-200">Binary Challenge</a></li>
-                        <li><a href="#game3" class="nav-link block p-2 rounded-lg hover:bg-cyan-500/20 transition-colors duration-200">Gate Guesser</a></li>
+                </li>
+                 <li>
+                    <a href="#" class="nav-link flex items-center p-2 rounded-lg hover:bg-cyan-500/20" data-target="papan-peringkat">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                        <span class="ml-3">Papan Peringkat</span>
+                    </a>
+                </li>
+                <li>
+                    <button class="submenu-toggle w-full flex items-center p-2 rounded-lg hover:bg-cyan-500/20 text-left">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z"></path></svg>
+                        <span class="ml-3 flex-1">Games</span>
+                        <svg class="w-4 h-4 transition-transform" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    </button>
+                    <ul class="submenu hidden mt-1 space-y-1 pl-6">
+                        <li><a href="#" class="nav-link block p-2 rounded-lg hover:bg-cyan-500/20" data-target="game1">Game 1: Puzzle Komponen</a></li>
+                        <li><a href="#" class="nav-link block p-2 rounded-lg hover:bg-cyan-500/20" data-target="game2">Game 2: Binary Challenge</a></li>
+                        <li><a href="#" class="nav-link block p-2 rounded-lg hover:bg-cyan-500/20" data-target="game3">Game 3: Gate Guesser</a></li>
                     </ul>
                 </li>
-                <li><a href="https://xiroro-ab.github.io/smp58dataguru/" target="_blank" class="flex items-center p-2 rounded-lg hover:bg-cyan-500/20 transition-colors duration-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
-                    Perangkat Ajar</a></li>
+                <li>
+                    <a href="https://xiroro-ab.github.io/smp58dataguru/" target="_blank" class="flex items-center p-2 rounded-lg hover:bg-cyan-500/20">
+                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                        <span class="ml-3">Perangkat Ajar</span>
+                    </a>
+                </li>
             </ul>
         </div>
-
-        <div class="mt-auto pt-4 border-t border-cyan-500/20 text-center text-xs text-gray-400">
+        
+        <div class="mt-auto text-center text-xs text-gray-400">
             <p>&copy; 2025 Aris Bermansyah, S.Kom</p>
         </div>
     </nav>
-    
-    <!-- Overlay for mobile sidebar -->
-    <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden"></div>
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-40 hidden"></div>
 
     <!-- Main Content -->
-    <div id="main-content" class="md:ml-72 transition-all duration-300">
+    <!-- REVISED: No margin by default -->
+    <div id="main-content" class="transition-all duration-300">
         <!-- Header -->
-        <header class="sticky top-0 glassmorphism p-4 flex items-center justify-between z-51">
+        <header class="sticky top-0 glassmorphism p-4 flex items-center justify-between z-30">
             <button id="menu-toggle" class="p-2 rounded-md hover:bg-cyan-500/20">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
@@ -244,153 +226,156 @@
         </header>
 
         <main class="p-4 md:p-8">
+            <!-- All content sections here... -->
             <!-- Beranda Section -->
             <section id="beranda" class="content-section active">
-                <h2 class="text-3xl md:text-4xl font-bold mb-8 neon-glow">Selamat Datang, Digital Explorer!</h2>
-                <p class="text-lg mb-12 text-gray-300">Platform ini dirancang untuk membawamu menyelami dunia sistem komputer dengan cara yang interaktif dan menantang. Pilih salah satu menu untuk memulai petualanganmu.</p>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <!-- Menu Item Cards -->
-                    <a href="#kompetensi" class="menu-card glassmorphism p-6 flex flex-col items-center justify-center text-center hover:border-cyan-400 transition-all duration-300">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mb-4 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
-                        <h3 class="text-xl font-semibold">Kompetensi</h3>
-                        <p class="text-sm text-gray-400 mt-2">Lihat tujuan dan capaian pembelajaran.</p>
-                    </a>
-                     <a href="#materi1" class="menu-card glassmorphism p-6 flex flex-col items-center justify-center text-center hover:border-cyan-400 transition-all duration-300">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mb-4 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v11.494m-9-5.747h18"/></svg>
-                        <h3 class="text-xl font-semibold">Materi</h3>
-                        <p class="text-sm text-gray-400 mt-2">Pelajari konsep dasar sistem komputer.</p>
-                    </a>
-                     <a href="#kuis" class="menu-card glassmorphism p-6 flex flex-col items-center justify-center text-center hover:border-cyan-400 transition-all duration-300">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mb-4 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        <h3 class="text-xl font-semibold">Kuis</h3>
-                        <p class="text-sm text-gray-400 mt-2">Uji pemahamanmu sekarang juga!</p>
-                    </a>
-                     <a href="#peringkat" class="menu-card glassmorphism p-6 flex flex-col items-center justify-center text-center hover:border-cyan-400 transition-all duration-300">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mb-4 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                        <h3 class="text-xl font-semibold">Papan Peringkat</h3>
-                        <p class="text-sm text-gray-400 mt-2">Lihat siapa yang terbaik di sini.</p>
-                    </a>
-                     <a href="#game1" class="menu-card glassmorphism p-6 flex flex-col items-center justify-center text-center hover:border-cyan-400 transition-all duration-300">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mb-4 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        <h3 class="text-xl font-semibold">Games</h3>
-                        <p class="text-sm text-gray-400 mt-2">Belajar sambil bermain.</p>
-                    </a>
+                <h1 class="text-4xl font-bold neon-glow mb-8 text-center">Selamat Datang di Portal Informatika</h1>
+                <p class="text-center mb-12 max-w-3xl mx-auto">Jelajahi materi, uji pemahamanmu dengan kuis interaktif, dan raih peringkat teratas!</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Menu Cards -->
+                    <div class="menu-card glassmorphism p-6 flex flex-col items-center text-center cursor-pointer hover:scale-105 transition-transform" data-target="kompetensi">
+                         <svg class="w-16 h-16 mb-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                        <h3 class="text-xl font-semibold mb-2">Kompetensi</h3>
+                        <p class="text-gray-300">Lihat capaian dan tujuan pembelajaran.</p>
+                    </div>
+                     <div class="menu-card glassmorphism p-6 flex flex-col items-center text-center cursor-pointer hover:scale-105 transition-transform" data-target="materi1">
+                        <svg class="w-16 h-16 mb-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v11.494m-9-5.747h18"></path></svg>
+                        <h3 class="text-xl font-semibold mb-2">Materi</h3>
+                        <p class="text-gray-300">Pelajari konsep dasar sistem komputer.</p>
+                    </div>
+                     <div class="menu-card glassmorphism p-6 flex flex-col items-center text-center cursor-pointer hover:scale-105 transition-transform" data-target="kuis">
+                        <svg class="w-16 h-16 mb-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <h3 class="text-xl font-semibold mb-2">Kuis</h3>
+                        <p class="text-gray-300">Uji pengetahuanmu dan raih skor tertinggi.</p>
+                    </div>
+                     <div class="menu-card glassmorphism p-6 flex flex-col items-center text-center cursor-pointer hover:scale-105 transition-transform" data-target="papan-peringkat">
+                        <svg class="w-16 h-16 mb-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                        <h3 class="text-xl font-semibold mb-2">Papan Peringkat</h3>
+                        <p class="text-gray-300">Lihat posisimu di antara yang lain.</p>
+                    </div>
+                     <div class="menu-card glassmorphism p-6 flex flex-col items-center text-center cursor-pointer hover:scale-105 transition-transform" data-target="game1">
+                         <svg class="w-16 h-16 mb-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z"></path></svg>
+                        <h3 class="text-xl font-semibold mb-2">Games</h3>
+                        <p class="text-gray-300">Belajar sambil bermain dengan game edukatif.</p>
+                    </div>
                 </div>
             </section>
-            
             <!-- Kompetensi Section -->
             <section id="kompetensi" class="content-section">
-                <div class="kompetensi-slider">
-                    <div class="kompetensi-slide">
-                        <h3 class="text-2xl font-bold mb-4 text-cyan-400">Capaian Pembelajaran</h3>
-                        <div class="glassmorphism p-6">
+                <div class="slider-container glassmorphism p-6" data-slider="kompetensi-slider">
+                    <div class="slider-wrapper">
+                        <div class="slide p-4">
+                            <h2 class="text-2xl font-bold neon-glow mb-4">Capaian Pembelajaran</h2>
                             <p class="text-gray-300 leading-relaxed">Pada akhir fase D, Peserta didik mampu memahami cara kerja dan penggunaan mesin pencari di internet; mengetahui kredibilitas sumber informasi digital dan mengenal ekosistem media pers digital; membedakan fakta dan opini; memahami pemanfaatan perkakas teknologi digital untuk membuat laporan, presentasi, serta analisis dan interpretasi data; mampu mendeskripsikan komponen, fungsi, dan cara kerja komputer; memahami konsep dan penerapan konektivitas jaringan lokal dan internet baik kabel maupun nirkabel; dan mengetahui jenis ruang publik virtual; memahami pemanfaatan media digital untuk produksi dan diseminasi konten.</p>
                         </div>
-                    </div>
-                    <div class="kompetensi-slide hidden">
-                        <h3 class="text-2xl font-bold mb-4 text-cyan-400">Tujuan Pembelajaran</h3>
-                         <div class="glassmorphism p-6">
-                            <ol class="list-decimal list-inside text-gray-300 space-y-2 leading-relaxed">
+                        <div class="slide p-4">
+                            <h2 class="text-2xl font-bold neon-glow mb-4">Tujuan Pembelajaran</h2>
+                             <ol class="list-decimal list-inside text-gray-300 leading-relaxed space-y-2">
                                 <li>Peserta didik mampu mendeskripsikan cara kerja komputer yang membentuk sebuah sistem komputasi.</li>
                                 <li>Peserta didik mampu menjelaskan proses dan penggunaan kodifikasi untuk penyimpanan data dalam memori komputer.</li>
                             </ol>
                         </div>
                     </div>
-                </div>
-                <div class="flex justify-between mt-6">
-                    <button id="kompetensi-prev" class="glassmorphism px-4 py-2 rounded-lg hover:bg-cyan-500/20 transition">Sebelumnya</button>
-                    <button id="kompetensi-next" class="glassmorphism px-4 py-2 rounded-lg hover:bg-cyan-500/20 transition">Selanjutnya</button>
+                    <button class="slider-nav left-2 slider-prev glassmorphism p-2 rounded-full"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>
+                    <button class="slider-nav right-2 slider-next glassmorphism p-2 rounded-full"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></button>
                 </div>
             </section>
-            
-            <!-- Materi Sections -->
+            <!-- Materi 1 Section -->
             <section id="materi1" class="content-section">
-                <h3 class="text-2xl font-bold mb-4 text-cyan-400">Materi 1: Booting, Pemrosesan, dan Cara Kerja CPU</h3>
-                <p class="mb-6 text-gray-300">Video-video berikut akan menjelaskan proses fundamental bagaimana sebuah komputer "bangun" dari keadaan mati (booting), memproses instruksi, dan bagaimana "otak" komputer, yaitu CPU, bekerja untuk menjalankan semua perintah yang kita berikan.</p>
-                <div class="materi-slider">
-                    <div class="materi-slide">
-                        <h4 class="text-xl font-semibold mb-2">Pengertian Booting</h4>
-                        <div class="video-container"><iframe src="https://www.youtube.com/embed/69p4mQ98Zig?si=xRTTzQMS5AFYAYKO" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>
-                    </div>
-                     <div class="materi-slide hidden">
-                        <h4 class="text-xl font-semibold mb-2">Cara Pemrosesan Booting</h4>
-                        <div class="video-container"><iframe src="https://www.youtube.com/embed/PSnGuvylWBI?si=FeHxE4Vt5pIpkbkO" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>
-                    </div>
-                     <div class="materi-slide hidden">
-                        <h4 class="text-xl font-semibold mb-2">Cara Kerja CPU</h4>
-                        <div class="video-container"><iframe src="https://www.youtube.com/embed/qa0FeN1Z_EQ?si=G5gzhzxE2Fj5Vw39" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>
-                    </div>
+                 <div class="glassmorphism p-6 mb-6">
+                    <h2 class="text-2xl font-bold neon-glow mb-2">Booting, Proses Booting, dan Cara Kerja CPU</h2>
+                    <p class="text-gray-300">Video-video berikut menjelaskan proses booting—dari menyalakan komputer hingga sistem operasi siap digunakan—serta memperkenalkan Anda pada CPU (Central Processing Unit), otak dari komputer yang menjalankan semua instruksi.</p>
                 </div>
-                <div class="flex justify-between mt-6">
-                    <button class="materi-prev glassmorphism px-4 py-2 rounded-lg hover:bg-cyan-500/20 transition">Sebelumnya</button>
-                    <button class="materi-next glassmorphism px-4 py-2 rounded-lg hover:bg-cyan-500/20 transition">Selanjutnya</button>
+                <div class="slider-container glassmorphism p-6" data-slider="materi1-slider">
+                    <div class="slider-wrapper">
+                        <div class="slide p-4">
+                             <h3 class="text-xl font-semibold mb-4 text-center">Apa Itu Booting?</h3>
+                            <div class="video-container custom-ratio"><iframe src="https://www.youtube.com/embed/69p4mQ98Zig?si=xRTTzQMS5AFYAYKO" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+                        </div>
+                        <div class="slide p-4">
+                            <h3 class="text-xl font-semibold mb-4 text-center">Proses Booting Komputer</h3>
+                            <div class="video-container custom-ratio"><iframe src="https://www.youtube.com/embed/PSnGuvylWBI?si=FeHxE4Vt5pIpkbkO" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+                        </div>
+                        <div class="slide p-4">
+                            <h3 class="text-xl font-semibold mb-4 text-center">Cara Kerja CPU</h3>
+                            <div class="video-container custom-ratio"><iframe src="https://www.youtube.com/embed/qa0FeN1Z_EQ?si=G5gzhzxE2Fj5Vw39" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+                        </div>
+                    </div>
+                     <button class="slider-nav left-2 slider-prev glassmorphism p-2 rounded-full"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>
+                    <button class="slider-nav right-2 slider-next glassmorphism p-2 rounded-full"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></button>
                 </div>
             </section>
-
+            <!-- Materi 2 Section -->
             <section id="materi2" class="content-section">
-                <h3 class="text-2xl font-bold mb-4 text-cyan-400">Materi 2: Konversi Bilangan</h3>
-                <p class="mb-6 text-gray-300">Komputer berkomunikasi menggunakan angka. Pelajari cara menerjemahkan bahasa manusia (desimal) ke bahasa komputer (seperti heksadesimal) dan sebaliknya. Ini adalah dasar dari bagaimana data direpresentasikan secara digital.</p>
-                <div class="materi-slider">
-                    <div class="materi-slide">
-                        <h4 class="text-xl font-semibold mb-2">Konversi Heksadesimal ke Basis Lain</h4>
-                        <div class="video-container"><iframe src="https://www.youtube.com/embed/7Rzu2gTxoYc?si=dIGC2aPcClm2iD-y" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>
-                    </div>
-                    <div class="materi-slide hidden">
-                        <h4 class="text-xl font-semibold mb-2">Konversi Desimal ke Basis Lain</h4>
-                        <div class="video-container"><iframe src="https://www.youtube.com/embed/C7AkrIZ94lU?si=c0KJt9Gtwjwejzc2" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>
-                    </div>
+                <div class="glassmorphism p-6 mb-6">
+                    <h2 class="text-2xl font-bold neon-glow mb-2">Konversi Sistem Bilangan</h2>
+                    <p class="text-gray-300">Pelajari cara mengonversi bilangan antar basis yang berbeda, seperti dari Heksadesimal (basis 16) dan Desimal (basis 10) ke sistem bilangan lainnya. Keterampilan ini fundamental dalam ilmu komputer.</p>
                 </div>
-                <div class="flex justify-between mt-6">
-                    <button class="materi-prev glassmorphism px-4 py-2 rounded-lg hover:bg-cyan-500/20 transition">Sebelumnya</button>
-                    <button class="materi-next glassmorphism px-4 py-2 rounded-lg hover:bg-cyan-500/20 transition">Selanjutnya</button>
+                 <div class="slider-container glassmorphism p-6" data-slider="materi2-slider">
+                    <div class="slider-wrapper">
+                        <div class="slide p-4">
+                            <h3 class="text-xl font-semibold mb-4 text-center">Konversi Heksadesimal ke Basis Lain</h3>
+                           <div class="video-container custom-ratio"><iframe src="https://www.youtube.com/embed/7Rzu2gTxoYc?si=dIGC2aPcClm2iD-y" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+                        </div>
+                         <div class="slide p-4">
+                            <h3 class="text-xl font-semibold mb-4 text-center">Konversi Desimal ke Basis Lain</h3>
+                           <div class="video-container custom-ratio"><iframe src="https://www.youtube.com/embed/C7AkrIZ94lU?si=c0KJt9Gtwjwejzc2" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+                        </div>
+                    </div>
+                     <button class="slider-nav left-2 slider-prev glassmorphism p-2 rounded-full"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>
+                    <button class="slider-nav right-2 slider-next glassmorphism p-2 rounded-full"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></button>
                 </div>
             </section>
-
+            <!-- Materi 3 Section -->
             <section id="materi3" class="content-section">
-                <h3 class="text-2xl font-bold mb-4 text-cyan-400">Materi 3: Gerbang Logika</h3>
-                <p class="mb-6 text-gray-300">Gerbang logika adalah blok bangunan paling dasar dari semua sirkuit digital. Pahami bagaimana komponen-komponen kecil ini membuat keputusan 'YA' atau 'TIDAK' (1 atau 0) yang menjadi dasar dari semua komputasi modern.</p>
-                 <div class="materi-slider">
-                    <div class="materi-slide">
-                        <h4 class="text-xl font-semibold mb-2">Pengenalan Gerbang Logika</h4>
-                        <div class="video-container"><iframe src="https://www.youtube.com/embed/LiqmFy0GRnw?si=7tYKHMOxrDGh8Bu1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>
-                    </div>
-                    <div class="materi-slide hidden">
-                        <h4 class="text-xl font-semibold mb-2">Macam-Macam Gerbang Logika</h4>
-                        <div class="video-container"><iframe src="https://www.youtube.com/embed/V_vbulWwXtQ?si=DrKI9PFpe89CzKvI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>
-                    </div>
+                <div class="glassmorphism p-6 mb-6">
+                    <h2 class="text-2xl font-bold neon-glow mb-2">Gerbang Logika (Logic Gates)</h2>
+                    <p class="text-gray-300">Gerbang logika adalah blok bangunan dasar dari sirkuit digital. Pahami berbagai jenis gerbang logika dan bagaimana mereka beroperasi untuk memproses informasi biner.</p>
                 </div>
-                <div class="flex justify-between mt-6">
-                    <button class="materi-prev glassmorphism px-4 py-2 rounded-lg hover:bg-cyan-500/20 transition">Sebelumnya</button>
-                    <button class="materi-next glassmorphism px-4 py-2 rounded-lg hover:bg-cyan-500/20 transition">Selanjutnya</button>
+                <div class="slider-container glassmorphism p-6" data-slider="materi3-slider">
+                    <div class="slider-wrapper">
+                        <div class="slide p-4">
+                            <h3 class="text-xl font-semibold mb-4 text-center">Pengenalan Gerbang Logika Dasar</h3>
+                            <div class="video-container custom-ratio"><iframe src="https://www.youtube.com/embed/LiqmFy0GRnw?si=7tYKHMOxrDGh8Bu1" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+                        </div>
+                         <div class="slide p-4">
+                            <h3 class="text-xl font-semibold mb-4 text-center">Macam-Macam Gerbang Logika</h3>
+                           <div class="video-container custom-ratio"><iframe src="https://www.youtube.com/embed/V_vbulWwXtQ?si=DrKI9PFpe89CzKvI" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+                        </div>
+                    </div>
+                     <button class="slider-nav left-2 slider-prev glassmorphism p-2 rounded-full"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>
+                    <button class="slider-nav right-2 slider-next glassmorphism p-2 rounded-full"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></button>
                 </div>
             </section>
-
             <!-- Kuis Section -->
             <section id="kuis" class="content-section">
+                <!-- Registration Form -->
                 <div id="kuis-registrasi">
-                    <h3 class="text-2xl font-bold mb-4 text-cyan-400">Registrasi Kuis</h3>
-                    <form id="form-registrasi" class="space-y-4 max-w-md mx-auto glassmorphism p-6">
-                        <div>
-                            <label for="nama" class="block mb-2">Nama:</label>
-                            <input type="text" id="nama" required class="w-full p-2 rounded-md bg-gray-800 border border-gray-600 focus:border-cyan-400 focus:outline-none">
+                    <h2 class="text-2xl font-bold neon-glow mb-6 text-center">Registrasi Kuis</h2>
+                    <form id="form-registrasi" class="max-w-md mx-auto glassmorphism p-8">
+                        <div class="mb-4">
+                            <label for="nama" class="block mb-2">Nama</label>
+                            <input type="text" id="nama" class="w-full bg-gray-800 border border-gray-600 rounded-lg p-2 focus:outline-none focus:border-cyan-400" required>
                         </div>
-                        <div>
-                            <label for="kelas" class="block mb-2">Kelas:</label>
-                            <select id="kelas" required class="w-full p-2 rounded-md bg-gray-800 border border-gray-600 focus:border-cyan-400 focus:outline-none">
+                        <div class="mb-4">
+                            <label for="kelas" class="block mb-2">Kelas</label>
+                            <select id="kelas" class="w-full bg-gray-800 border border-gray-600 rounded-lg p-2 focus:outline-none focus:border-cyan-400" required>
                                 <option value="9.1">9.1</option>
                                 <option value="9.2">9.2</option>
                                 <option value="9.3">9.3</option>
                                 <option value="9.4">9.4</option>
                             </select>
                         </div>
-                         <div>
-                            <label for="token" class="block mb-2">Token:</label>
-                            <input type="password" id="token" required class="w-full p-2 rounded-md bg-gray-800 border border-gray-600 focus:border-cyan-400 focus:outline-none">
+                        <div class="mb-6">
+                            <label for="token" class="block mb-2">Token</label>
+                            <input type="password" id="token" class="w-full bg-gray-800 border border-gray-600 rounded-lg p-2 focus:outline-none focus:border-cyan-400" required>
                         </div>
-                        <button type="submit" class="w-full p-2 rounded-md bg-cyan-500 hover:bg-cyan-400 text-black font-bold transition">Mulai Kuis</button>
+                        <button type="submit" class="w-full glassmorphism px-4 py-3 rounded-lg hover:bg-cyan-500/20 transition font-bold">Mulai Kuis</button>
+                        <p id="registrasi-error" class="text-red-500 text-center mt-4"></p>
                     </form>
                 </div>
-
+                <!-- Quiz Container -->
                 <div id="kuis-container" class="hidden">
                     <div class="flex justify-between items-center mb-4">
                         <div class="text-lg">Soal <span id="nomor-soal">1</span>/10</div>
@@ -401,7 +386,7 @@
                     </div>
                     
                     <div class="glassmorphism p-6">
-                        <img id="gambar-soal" src="https://placehold.co/600x300/000000/00ffff?text=Gambar+Soal" alt="Gambar Soal" class="w-full max-w-lg mx-auto rounded-lg mb-6 border border-cyan-500/50">
+                        <img id="gambar-soal" src="" alt="Gambar Soal" class="w-full h-48 object-contain rounded-lg mb-6 bg-black/20">
                         <p id="pertanyaan" class="text-xl mb-6"></p>
                         <div id="pilihan-jawaban" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <!-- Options will be injected here -->
@@ -410,95 +395,99 @@
                     
                     <div class="flex justify-between mt-6">
                         <button id="btn-sebelumnya" class="glassmorphism px-4 py-2 rounded-lg hover:bg-cyan-500/20 transition">Sebelumnya</button>
-                        <button id="btn-selanjutnya" class="glassmorphism px-4 py-2 rounded-lg hover:bg-cyan-500/20 transition">Selanjutnya</button>
+                        <button id="btn-selanjutnya" class="glassmorphism px-4 py-2 rounded-lg hover:bg-cyan-500/20 transition font-bold">Selanjutnya</button>
                     </div>
                 </div>
-
+                <!-- Quiz Result -->
                 <div id="kuis-hasil" class="hidden text-center glassmorphism p-8">
-                    <h3 class="text-3xl font-bold mb-4 text-cyan-400">Kuis Selesai!</h3>
+                    <h2 class="text-3xl font-bold neon-glow mb-4">Kuis Selesai!</h2>
                     <p class="text-xl mb-2">Skor Anda:</p>
-                    <p id="skor-akhir" class="text-6xl font-bold neon-glow mb-8">100</p>
+                    <p id="skor-akhir" class="text-6xl font-bold mb-6 text-cyan-400">100</p>
                     <p id="feedback-pesan" class="mb-8"></p>
                     <div class="flex justify-center gap-4">
-                        <button id="btn-ulangi" class="px-6 py-2 rounded-md bg-cyan-500 hover:bg-cyan-400 text-black font-bold transition">Kerjakan Ulang</button>
-                        <a href="#peringkat" id="btn-lihat-peringkat" class="nav-link px-6 py-2 rounded-md border border-cyan-500 hover:bg-cyan-500/20 font-bold transition">Lihat Papan Peringkat</a>
+                        <button id="btn-ulangi" class="glassmorphism px-6 py-3 rounded-lg hover:bg-cyan-500/20 transition">Kerjakan Ulang</button>
+                        <button id="btn-lihat-peringkat" class="glassmorphism px-6 py-3 rounded-lg hover:bg-cyan-500/20 transition font-bold">Lihat Papan Peringkat</button>
                     </div>
                 </div>
             </section>
-            
             <!-- Papan Peringkat Section -->
-            <section id="peringkat" class="content-section">
-                <h3 class="text-2xl font-bold mb-6 text-cyan-400">Papan Peringkat</h3>
-                <div id="leaderboard-loading" class="text-center p-8">
-                    <p>Memuat data peringkat...</p>
-                </div>
-                <div id="leaderboard-content" class="hidden">
-                     <!-- Podium -->
-                    <div class="flex items-end justify-center gap-4 mb-8">
-                        <div id="podium-2" class="podium-item podium-2 p-4 glassmorphism w-1/4"></div>
-                        <div id="podium-1" class="podium-item podium-1 p-4 glassmorphism w-1/3"></div>
-                        <div id="podium-3" class="podium-item podium-3 p-4 glassmorphism w-1/4"></div>
+            <section id="papan-peringkat" class="content-section">
+                <h2 class="text-3xl font-bold neon-glow mb-8 text-center">Papan Peringkat</h2>
+                 <!-- Podium -->
+                <div class="grid grid-cols-3 items-end gap-4 mb-10 max-w-4xl mx-auto">
+                    <div id="podium-2" class="podium-item podium-2 p-4 rounded-t-lg shadow-lg">
+                        <!-- Rank 2 -->
                     </div>
-
-                    <!-- Full Ranking Table -->
-                    <div class="glassmorphism overflow-x-auto">
-                        <table class="w-full text-left">
-                            <thead class="border-b border-cyan-500/30">
-                                <tr>
-                                    <th class="p-4">Peringkat</th>
-                                    <th class="p-4">Nama</th>
-                                    <th class="p-4">Kelas</th>
-                                    <th class="p-4">Skor</th>
-                                </tr>
-                            </thead>
-                            <tbody id="peringkat-tabel">
-                                <!-- Data will be populated here -->
-                            </tbody>
-                        </table>
+                    <div id="podium-1" class="podium-item podium-1 p-4 rounded-t-lg shadow-lg">
+                        <!-- Rank 1 -->
+                    </div>
+                    <div id="podium-3" class="podium-item podium-3 p-4 rounded-t-lg shadow-lg">
+                        <!-- Rank 3 -->
                     </div>
                 </div>
-            </section>
-
-            <!-- Games Sections -->
-            <section id="game1" class="content-section">
-                <h3 class="text-2xl font-bold mb-4 text-cyan-400">Game 1: Puzzle Komponen</h3>
-                <p class="mb-4 text-gray-300">Susun kembali potongan gambar komponen komputer ini. Klik dua potongan untuk menukarnya. Selesaikan secepat mungkin!</p>
-                <div class="max-w-xl mx-auto">
-                    <div id="puzzle-container" class="mb-4"></div>
-                    <button id="reset-puzzle" class="w-full p-2 rounded-md bg-cyan-500 hover:bg-cyan-400 text-black font-bold transition">Acak Ulang</button>
-                    <p id="puzzle-feedback" class="text-center mt-4 font-bold text-cyan-400"></p>
+                <!-- Table -->
+                <div class="glassmorphism p-4 overflow-x-auto">
+                     <table class="w-full min-w-[600px] text-left">
+                        <thead class="border-b border-cyan-400">
+                            <tr>
+                                <th class="p-4">Peringkat</th>
+                                <th class="p-4">Nama</th>
+                                <th class="p-4">Kelas</th>
+                                <th class="p-4">Skor</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leaderboard-body">
+                           <!-- Data will be populated here -->
+                           <tr><td colspan="4" class="text-center p-8">Memuat data...</td></tr>
+                        </tbody>
+                    </table>
                 </div>
             </section>
-
-            <section id="game2" class="content-section">
-                <h3 class="text-2xl font-bold mb-4 text-cyan-400">Game 2: Binary Challenge</h3>
-                <p class="mb-4 text-gray-300">Konversikan angka desimal berikut ke dalam bentuk biner (terdiri dari 0 dan 1). Uji kecepatan dan ketepatanmu!</p>
-                <div class="max-w-md mx-auto text-center glassmorphism p-6">
-                    <p class="mb-2">Konversikan angka ini ke biner:</p>
-                    <p id="binary-challenge-number" class="text-5xl font-bold mb-4 neon-glow">25</p>
-                    <input type="text" id="binary-challenge-input" class="w-full p-2 rounded-md bg-gray-800 border border-gray-600 text-center text-xl tracking-[0.2em]" placeholder="Jawaban Biner">
-                    <button id="binary-challenge-submit" class="w-full mt-4 p-2 rounded-md bg-cyan-500 hover:bg-cyan-400 text-black font-bold transition">Cek Jawaban</button>
-                    <p id="binary-challenge-feedback" class="mt-4 font-bold h-6"></p>
-                </div>
+            <!-- Game 1 Section -->
+            <section id="game1" class="content-section text-center">
+                 <h2 class="text-3xl font-bold neon-glow mb-4">Game 1: Puzzle Komponen</h2>
+                 <p class="mb-6 max-w-2xl mx-auto">Susun kembali potongan gambar komponen komputer ini. Klik satu potongan lalu klik potongan lain untuk menukar posisi mereka.</p>
+                 <div id="puzzle-container" class="grid grid-cols-4 gap-1 max-w-md mx-auto border-2 border-cyan-400 p-1 rounded-lg"></div>
+                 <button id="reset-puzzle" class="glassmorphism px-6 py-2 rounded-lg hover:bg-cyan-500/20 transition mt-6">Reset Puzzle</button>
+                 <p id="puzzle-feedback" class="mt-4 text-cyan-400 font-bold h-6"></p>
             </section>
-
-            <section id="game3" class="content-section">
-                <h3 class="text-2xl font-bold mb-4 text-cyan-400">Game 3: Gate Guesser</h3>
-                 <p class="mb-4 text-gray-300">Diberikan sebuah gerbang logika dan dua nilai inputnya. Tentukan apa output yang benar (0 atau 1).</p>
-                 <div class="max-w-lg mx-auto text-center glassmorphism p-6">
-                    <p class="text-xl mb-2">Gerbang Logika:</p>
-                    <p id="gate-guesser-name" class="text-3xl font-bold mb-6 neon-glow">AND</p>
-                    <div class="flex justify-around items-center mb-6 text-xl">
-                        <p>Input A: <span id="gate-guesser-input-a" class="font-bold text-cyan-400">0</span></p>
-                        <p>Input B: <span id="gate-guesser-input-b" class="font-bold text-cyan-400">0</span></p>
+            <!-- Game 2 Section -->
+            <section id="game2" class="content-section text-center">
+                <h2 class="text-3xl font-bold neon-glow mb-4">Game 2: Binary Challenge</h2>
+                <p class="mb-6 max-w-2xl mx-auto">Konversikan angka desimal ke biner secepat mungkin! Ketik jawabanmu (hanya 0 dan 1) dan tekan Enter.</p>
+                <div class="glassmorphism p-8 max-w-md mx-auto">
+                    <p class="mb-4">Ubah angka desimal ini ke biner:</p>
+                    <p id="decimal-number" class="text-6xl font-bold text-cyan-400 mb-6">10</p>
+                    <input type="text" id="binary-input" class="w-full bg-gray-800 border border-gray-600 rounded-lg p-3 text-center text-2xl focus:outline-none focus:border-cyan-400" placeholder="Jawaban Biner">
+                    <p id="binary-feedback" class="mt-4 h-6"></p>
+                </div>
+                 <button id="new-binary-challenge" class="glassmorphism px-6 py-2 rounded-lg hover:bg-cyan-500/20 transition mt-6">Nomor Baru</button>
+            </section>
+            <!-- Game 3 Section -->
+            <section id="game3" class="content-section text-center">
+                <h2 class="text-3xl font-bold neon-glow mb-4">Game 3: Gate Guesser</h2>
+                <p class="mb-6 max-w-2xl mx-auto">Tebak output dari gerbang logika yang ditampilkan. Apakah hasilnya 0 atau 1?</p>
+                <div class="glassmorphism p-8 max-w-md mx-auto">
+                    <p class="mb-2">Gerbang Logika:</p>
+                    <p id="gate-name" class="text-3xl font-bold text-cyan-400 mb-6">AND</p>
+                    <div class="flex justify-center gap-8 items-center mb-6">
+                        <div>
+                            <p>Input A</p>
+                            <p id="gate-input-a" class="text-4xl font-bold">1</p>
+                        </div>
+                         <div>
+                            <p>Input B</p>
+                            <p id="gate-input-b" class="text-4xl font-bold">1</p>
+                        </div>
                     </div>
                     <p class="mb-4">Apa outputnya?</p>
-                    <div id="gate-answer-options" class="grid grid-cols-2 gap-4">
-                        <button class="gate-answer-option p-4 rounded-md bg-gray-700 hover:bg-gray-600 transition text-2xl font-bold">0</button>
-                        <button class="gate-answer-option p-4 rounded-md bg-gray-700 hover:bg-gray-600 transition text-2xl font-bold">1</button>
+                    <div class="flex justify-center gap-4">
+                        <button class="gate-answer glassmorphism w-24 py-3 rounded-lg hover:bg-cyan-500/20 transition font-bold text-2xl" data-answer="0">0</button>
+                        <button class="gate-answer glassmorphism w-24 py-3 rounded-lg hover:bg-cyan-500/20 transition font-bold text-2xl" data-answer="1">1</button>
                     </div>
-                     <p id="gate-guesser-feedback" class="mt-4 font-bold h-6"></p>
-                 </div>
+                    <p id="gate-feedback" class="mt-4 h-6"></p>
+                </div>
+                <button id="new-gate-challenge" class="glassmorphism px-6 py-2 rounded-lg hover:bg-cyan-500/20 transition mt-6">Soal Baru</button>
             </section>
         </main>
     </div>
@@ -506,7 +495,6 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             
-            // --- Navigation and Page Handling ---
             const menuToggle = document.getElementById('menu-toggle');
             const sidebar = document.getElementById('sidebar');
             const sidebarOverlay = document.getElementById('sidebar-overlay');
@@ -516,95 +504,88 @@
             const contentSections = document.querySelectorAll('.content-section');
             const menuCards = document.querySelectorAll('.menu-card');
 
+            // --- REVISED SIDEBAR LOGIC ---
             menuToggle.addEventListener('click', (e) => {
                 e.stopPropagation();
-                
-                // Logic for Mobile view (< 768px)
-                if (window.innerWidth < 768) {
-                    sidebar.classList.toggle('-translate-x-full');
-                    sidebarOverlay.classList.toggle('hidden');
-                } 
-                // Logic for Desktop view (>= 768px)
-                else {
-                    // On desktop, we simply toggle the class that makes it visible ('md:translate-x-0')
-                    // and the margin for the main content.
-                    sidebar.classList.toggle('md:translate-x-0');
-                    mainContent.classList.toggle('md:ml-72');
-                }
+                // Toggle sidebar visibility
+                sidebar.classList.toggle('-translate-x-full');
+                // Toggle main content margin for desktop
+                mainContent.classList.toggle('md:ml-72');
+                // Toggle overlay visibility for mobile
+                sidebarOverlay.classList.toggle('hidden');
             });
 
             const closeMobileSidebar = () => {
-                 if (window.innerWidth < 768 && !sidebar.classList.contains('-translate-x-full')) {
+                 if (!sidebar.classList.contains('-translate-x-full')) {
                     sidebar.classList.add('-translate-x-full');
                     sidebarOverlay.classList.add('hidden');
+                    mainContent.classList.remove('md:ml-72');
                 }
-            }
-
+            };
+            
             sidebarOverlay.addEventListener('click', closeMobileSidebar);
+            // --- END OF REVISED LOGIC ---
 
-            const showPage = (hash) => {
-                const targetId = hash.substring(1) || 'beranda';
-                
+            const setActivePage = (targetId) => {
                 contentSections.forEach(section => {
                     section.classList.remove('active');
                 });
-                
                 const activeSection = document.getElementById(targetId);
                 if (activeSection) {
                     activeSection.classList.add('active');
-                    let title = targetId.charAt(0).toUpperCase() + targetId.slice(1);
-                    if (targetId.startsWith('materi')) title = 'Materi';
-                    if (targetId.startsWith('game')) title = 'Games';
-                    pageTitle.textContent = title;
-
-                    if(targetId === 'peringkat') loadLeaderboardData();
+                    const link = document.querySelector(`.nav-link[data-target="${targetId}"], .menu-card[data-target="${targetId}"]`);
+                    pageTitle.textContent = link.querySelector('h3') ? link.querySelector('h3').textContent.trim() : link.textContent.trim();
                 }
-                closeMobileSidebar();
-            };
-            
-            const handleNavClick = (e) => {
-                const hash = e.currentTarget.getAttribute('href');
-                if (hash.startsWith('#')) {
-                    e.preventDefault();
-                    window.location.hash = hash;
+
+                if (targetId === 'papan-peringkat') {
+                    fetchLeaderboard();
                 }
+
+                if (window.innerWidth < 768) {
+                    sidebar.classList.add('-translate-x-full');
+                    sidebarOverlay.classList.add('hidden');
+                }
+                window.scrollTo(0, 0);
             };
-            
-            navLinks.forEach(link => link.addEventListener('click', handleNavClick));
-            menuCards.forEach(card => card.addEventListener('click', handleNavClick));
 
-            window.addEventListener('hashchange', () => showPage(window.location.hash));
-            showPage(window.location.hash);
-
-            // Submenu toggle
-            const submenuToggles = document.querySelectorAll('.submenu-toggle');
-            submenuToggles.forEach(toggle => {
-                toggle.addEventListener('click', e => {
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
                     e.preventDefault();
-                    toggle.classList.toggle('active');
-                    toggle.querySelector('svg:last-child').classList.toggle('rotate-180');
+                    const targetId = link.getAttribute('data-target');
+                    setActivePage(targetId);
                 });
             });
 
-            // --- Simple Slider Logic ---
-            const initSlider = (containerSelector, slideSelector, prevBtnSelector, nextBtnSelector) => {
-                const container = document.querySelector(containerSelector);
-                if (!container) return;
+            menuCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    const targetId = card.getAttribute('data-target');
+                    setActivePage(targetId);
+                });
+            });
 
-                const slides = container.querySelectorAll(slideSelector);
-                const prevBtn = document.querySelector(prevBtnSelector);
-                const nextBtn = document.querySelector(nextBtnSelector);
+            document.querySelectorAll('.submenu-toggle').forEach(button => {
+                button.addEventListener('click', () => {
+                    const submenu = button.nextElementSibling;
+                    submenu.classList.toggle('hidden');
+                    button.querySelector('svg:last-child').classList.toggle('rotate-180');
+                });
+            });
+
+            function initSlider(sliderContainer) {
+                const wrapper = sliderContainer.querySelector('.slider-wrapper');
+                const slides = sliderContainer.querySelectorAll('.slide');
+                if (slides.length <=1) return; // Don't init slider if only one slide
+                const prevBtn = sliderContainer.querySelector('.slider-prev');
+                const nextBtn = sliderContainer.querySelector('.slider-next');
                 let currentIndex = 0;
 
-                const updateSlider = () => {
-                    slides.forEach((slide, index) => {
-                        slide.classList.toggle('hidden', index !== currentIndex);
-                    });
+                function updateSlider() {
+                    wrapper.style.transform = `translateX(-${currentIndex * 100}%)`;
                     prevBtn.disabled = currentIndex === 0;
                     nextBtn.disabled = currentIndex === slides.length - 1;
-                    prevBtn.style.opacity = prevBtn.disabled ? 0.5 : 1;
-                    nextBtn.style.opacity = nextBtn.disabled ? 0.5 : 1;
-                };
+                    prevBtn.classList.toggle('opacity-50', currentIndex === 0);
+                    nextBtn.classList.toggle('opacity-50', currentIndex === slides.length - 1);
+                }
 
                 prevBtn.addEventListener('click', () => {
                     if (currentIndex > 0) {
@@ -620,22 +601,11 @@
                     }
                 });
                 updateSlider();
-            };
-            
-            initSlider('#kompetensi', '.kompetensi-slide', '#kompetensi-prev', '#kompetensi-next');
-            document.querySelectorAll('section[id^="materi"]').forEach(materiSection => {
-                const sectionId = `#${materiSection.id}`;
-                initSlider(
-                    `${sectionId} .materi-slider`,
-                    '.materi-slide',
-                    `${sectionId} .materi-prev`,
-                    `${sectionId} .materi-next`
-                );
-            });
+            }
+            document.querySelectorAll('.slider-container').forEach(initSlider);
 
-            // --- Quiz Logic ---
-            const kuisRegistrasi = document.getElementById('kuis-registrasi');
             const formRegistrasi = document.getElementById('form-registrasi');
+            const kuisRegistrasi = document.getElementById('kuis-registrasi');
             const kuisContainer = document.getElementById('kuis-container');
             const kuisHasil = document.getElementById('kuis-hasil');
             const timerEl = document.getElementById('timer');
@@ -652,58 +622,60 @@
             const btnLihatPeringkat = document.getElementById('btn-lihat-peringkat');
 
             const quizData = [
-                { question: "Proses menghidupkan komputer dari keadaan mati total disebut...", options: ["Restart", "Booting", "Shutdown", "Hibernate"], answer: "Booting", image: "https://placehold.co/600x300/000000/00FFFF?text=?" },
-                { question: "Komponen yang dianggap sebagai 'otak' komputer adalah...", options: ["RAM", "Hard Disk", "Motherboard", "CPU"], answer: "CPU", image: "https://placehold.co/600x300/000000/00FFFF?text=?" },
-                { question: "Tahapan booting di mana sistem operasi dimuat ke memori disebut...", options: ["POST", "BIOS", "Loading Kernel", "Login"], answer: "Loading Kernel", image: "https://placehold.co/600x300/000000/00FFFF?text=?" },
-                { question: "Angka heksadesimal 'A' setara dengan angka desimal...", options: ["9", "10", "11", "16"], answer: "10", image: "https://placehold.co/600x300/000000/00FFFF?text=Hex+vs+Decimal" },
-                { question: "Angka desimal 15 jika diubah ke basis bilangan biner menjadi...", options: ["1111", "1010", "1101", "1001"], answer: "1111", image: "https://placehold.co/600x300/000000/00FFFF?text=?" },
-                { question: "Sistem bilangan yang menggunakan basis 16 disebut...", options: ["Biner", "Oktal", "Desimal", "Heksadesimal"], answer: "Heksadesimal", image: "https://placehold.co/600x300/000000/00FFFF?text=?" },
-                { question: "Gerbang logika yang akan menghasilkan output 1 hanya jika semua inputnya bernilai 1 adalah...", options: ["OR", "NOT", "AND", "XOR"], answer: "AND", "https://placehold.co/600x300/000000/00FFFF?text=?" },
-                { question: "Gerbang logika yang berfungsi untuk membalikkan nilai input (inverter) adalah...", options: ["NOT", "NAND", "NOR", "OR"], answer: "NOT", image: "https://placehold.co/600x300/000000/00FFFF?text=?" },
-                { question: "Gerbang logika apa yang outputnya akan 1 jika salah satu atau semua inputnya 1?", options: ["AND", "XOR", "NAND", "OR"], answer: "OR", image: "https://placehold.co/600x300/000000/00FFFF?text=?" },
-                { question: "Kombinasi gerbang AND dan NOT akan menghasilkan gerbang...", options: ["NOR", "XOR", "NAND", "XNOR"], answer: "NAND", image: "https://placehold.co/600x300/000000/00FFFF?text=?" }
+                { question: "Proses menghidupkan komputer dari keadaan mati total disebut...", options: ["Restart", "Booting", "Shutdown", "Hibernate"], answer: "Booting" },
+                { question: "Komponen yang dianggap sebagai 'otak' komputer adalah...", options: ["RAM", "Hard Disk", "Motherboard", "CPU"], answer: "CPU" },
+                { question: "Tahapan booting di mana sistem operasi dimuat ke memori disebut...", options: ["POST", "BIOS", "Loading Kernel", "Login"], answer: "Loading Kernel" },
+                { question: "Angka heksadesimal 'A' setara dengan angka desimal...", options: ["9", "10", "11", "16"], answer: "10" },
+                { question: "Angka desimal 15 jika diubah ke basis bilangan biner menjadi...", options: ["1111", "1010", "1101", "1001"], answer: "1111" },
+                { question: "Sistem bilangan yang menggunakan basis 16 disebut...", options: ["Biner", "Oktal", "Desimal", "Heksadesimal"], answer: "Heksadesimal" },
+                { question: "Gerbang logika yang akan menghasilkan output 1 hanya jika semua inputnya bernilai 1 adalah...", options: ["OR", "NOT", "AND", "XOR"], answer: "AND" },
+                { question: "Gerbang logika yang berfungsi untuk membalikkan nilai input (inverter) adalah...", options: ["NOT", "NAND", "NOR", "OR"], answer: "NOT" },
+                { question: "Gerbang logika apa yang outputnya akan 1 jika salah satu atau semua inputnya 1?", options: ["AND", "XOR", "NAND", "OR"], answer: "OR" },
+                { question: "Kombinasi gerbang AND dan NOT akan menghasilkan gerbang...", options: ["NOR", "XOR", "NAND", "XNOR"], answer: "NAND" }
             ];
 
+            const questionMarkImageUrl = 'https://images.unsplash.com/photo-1599507533314-99a33b353164?w=600&h=300&fit=crop';
             let currentQuestionIndex = 0;
             let userAnswers = new Array(quizData.length).fill(null);
-            let timerInterval;
-            let timeLeft = 120; // 2 minutes
-            let userData = {};
+            let timer;
+            let timeLeft = 120;
+            let studentData = {};
 
             formRegistrasi.addEventListener('submit', (e) => {
                 e.preventDefault();
                 const token = document.getElementById('token').value;
+                const errorEl = document.getElementById('registrasi-error');
                 if (token === '1234') {
-                    userData = {
-                        nama: document.getElementById('nama').value,
-                        kelas: document.getElementById('kelas').value,
-                    };
+                    studentData.nama = document.getElementById('nama').value;
+                    studentData.kelas = document.getElementById('kelas').value;
+                    kuisRegistrasi.classList.add('hidden');
+                    kuisContainer.classList.remove('hidden');
                     startQuiz();
                 } else {
-                    alert('Token salah!');
+                    errorEl.textContent = 'Token salah. Silakan coba lagi.';
                 }
             });
 
             function startQuiz() {
-                kuisRegistrasi.classList.add('hidden');
-                kuisContainer.classList.remove('hidden');
-                kuisHasil.classList.add('hidden');
                 currentQuestionIndex = 0;
                 userAnswers.fill(null);
                 timeLeft = 120;
                 renderQuestion();
                 startTimer();
+                kuisHasil.classList.add('hidden');
+                kuisContainer.classList.remove('hidden');
             }
 
             function startTimer() {
-                clearInterval(timerInterval);
-                timerInterval = setInterval(() => {
+                clearInterval(timer);
+                timer = setInterval(() => {
                     timeLeft--;
                     const minutes = Math.floor(timeLeft / 60);
                     const seconds = timeLeft % 60;
-                    timerEl.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                    timerEl.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
                     if (timeLeft <= 0) {
-                        endQuiz();
+                        clearInterval(timer);
+                        finishQuiz();
                     }
                 }, 1000);
             }
@@ -711,34 +683,39 @@
             function renderQuestion() {
                 const questionData = quizData[currentQuestionIndex];
                 nomorSoalEl.textContent = currentQuestionIndex + 1;
+                gambarSoalEl.src = questionMarkImageUrl;
                 pertanyaanEl.textContent = questionData.question;
-                gambarSoalEl.src = questionData.image;
                 pilihanJawabanEl.innerHTML = '';
-
                 questionData.options.forEach(option => {
                     const button = document.createElement('button');
                     button.textContent = option;
-                    button.classList.add('quiz-option', 'p-4', 'rounded-lg', 'border', 'border-gray-600', 'hover:bg-cyan-500/30', 'transition', 'text-left');
+                    button.classList.add('w-full', 'glassmorphism', 'p-3', 'rounded-lg', 'text-left', 'hover:bg-cyan-500/20', 'transition');
                     if (userAnswers[currentQuestionIndex] === option) {
-                        button.classList.add('selected');
+                        button.classList.add('bg-cyan-500/30');
                     }
-                    button.addEventListener('click', () => selectAnswer(option));
+                    button.addEventListener('click', () => {
+                        userAnswers[currentQuestionIndex] = option;
+                        renderQuestion();
+                    });
                     pilihanJawabanEl.appendChild(button);
                 });
-
-                progressBar.style.width = `${((currentQuestionIndex + 1) / quizData.length) * 100}%`;
+                updateNavigation();
+                updateProgressBar();
+            }
+            
+            function updateNavigation() {
                 btnSebelumnya.disabled = currentQuestionIndex === 0;
-                btnSebelumnya.style.opacity = btnSebelumnya.disabled ? 0.5 : 1;
-                btnSelanjutnya.textContent = currentQuestionIndex === quizData.length - 1 ? 'Selesai' : 'Selanjutnya';
+                btnSebelumnya.classList.toggle('opacity-50', currentQuestionIndex === 0);
+                if (currentQuestionIndex === quizData.length - 1) {
+                    btnSelanjutnya.textContent = 'Selesai';
+                } else {
+                    btnSelanjutnya.textContent = 'Selanjutnya';
+                }
             }
 
-            function selectAnswer(option) {
-                userAnswers[currentQuestionIndex] = option;
-                document.querySelectorAll('.quiz-option').forEach(btn => btn.classList.remove('selected'));
-                const selectedButton = Array.from(document.querySelectorAll('.quiz-option')).find(btn => btn.textContent === option);
-                if (selectedButton) {
-                    selectedButton.classList.add('selected');
-                }
+            function updateProgressBar() {
+                const progress = ((currentQuestionIndex + 1) / quizData.length) * 100;
+                progressBar.style.width = `${progress}%`;
             }
 
             btnSebelumnya.addEventListener('click', () => {
@@ -753,289 +730,222 @@
                     currentQuestionIndex++;
                     renderQuestion();
                 } else {
-                    endQuiz();
+                    finishQuiz();
                 }
             });
 
-            function endQuiz() {
-                clearInterval(timerInterval);
+            function finishQuiz() {
+                clearInterval(timer);
                 let score = 0;
-                userAnswers.forEach((answer, index) => {
-                    if (answer === quizData[index].answer) {
+                quizData.forEach((q, index) => {
+                    if (userAnswers[index] === q.answer) {
                         score += 10;
                     }
                 });
-
                 skorAkhirEl.textContent = score;
-                let feedback = "";
-                if(score >= 80) feedback = "Luar biasa! Pemahamanmu sangat baik.";
-                else if(score >= 60) feedback = "Bagus! Terus tingkatkan lagi belajarmu.";
-                else feedback = "Jangan menyerah, coba pelajari lagi materinya dan ulangi kuisnya!";
-                feedbackPesanEl.textContent = feedback;
-
+                 if (score >= 80) {
+                    feedbackPesanEl.textContent = "Luar biasa! Pemahamanmu sangat baik.";
+                } else if (score >= 60) {
+                    feedbackPesanEl.textContent = "Bagus! Terus tingkatkan lagi belajarmu.";
+                } else {
+                    feedbackPesanEl.textContent = "Jangan menyerah, coba pelajari kembali materinya dan ulangi kuis.";
+                }
                 kuisContainer.classList.add('hidden');
                 kuisHasil.classList.remove('hidden');
-                
-                // Save score to Google Sheet
-                saveScoreToSheet(userData.nama, userData.kelas, score);
+                saveScore(studentData.nama, studentData.kelas, score);
             }
 
             btnUlangi.addEventListener('click', () => {
                 kuisHasil.classList.add('hidden');
                 kuisRegistrasi.classList.remove('hidden');
                 formRegistrasi.reset();
+                document.getElementById('registrasi-error').textContent = '';
             });
 
-            // --- Google Sheets Integration ---
-            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxq8umt8gBEsv6y0E4z742Lo8aUpzlO4Z3uovu47tHfN4rg14NIELT4a3SWTUdOIYXs/exec";
+            btnLihatPeringkat.addEventListener('click', () => setActivePage('papan-peringkat'));
             
-            async function saveScoreToSheet(nama, kelas, skor) {
+            const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxq8umt8gBEsv6y0E4z742Lo8aUpzlO4Z3uovu47tHfN4rg14NIELT4a3SWTUdOIYXs/exec";
+
+            async function saveScore(nama, kelas, skor) {
                 const formData = new FormData();
                 formData.append('nama', nama);
                 formData.append('kelas', kelas);
                 formData.append('skor', skor);
-                
                 try {
-                    const response = await fetch(SCRIPT_URL, {
-                        method: 'POST',
-                        body: formData
-                    });
-                    const result = await response.json();
-                    console.log('Save result:', result);
+                    // Using a simple POST request without waiting for a cors-compliant response
+                    fetch(WEB_APP_URL, { method: 'POST', body: new URLSearchParams(formData) });
                 } catch (error) {
-                    console.error('Error saving score:', error);
+                    console.error('Error submitting score:', error);
                 }
             }
 
-            async function loadLeaderboardData() {
-                const loadingEl = document.getElementById('leaderboard-loading');
-                const contentEl = document.getElementById('leaderboard-content');
-                const tableBody = document.getElementById('peringkat-tabel');
-                
-                loadingEl.style.display = 'block';
-                contentEl.classList.add('hidden');
-                
+            async function fetchLeaderboard() {
+                const tableBody = document.getElementById('leaderboard-body');
+                tableBody.innerHTML = '<tr><td colspan="4" class="text-center p-8">Memuat data peringkat...</td></tr>';
                 try {
-                    const response = await fetch(SCRIPT_URL);
-                    let data = await response.json();
-
-                    // Sort data by score (desc) and then by timestamp (asc)
-                    data.sort((a, b) => {
-                        if (b.Skor !== a.Skor) {
-                            return b.Skor - a.Skor;
-                        }
-                        return new Date(a.Timestamp) - new Date(b.Timestamp);
-                    });
-
-                    // Clear previous entries
+                    const response = await fetch(WEB_APP_URL);
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    const data = await response.json();
+                    data.sort((a, b) => b.Skor - a.Skor || new Date(a.Timestamp) - new Date(b.Timestamp));
                     tableBody.innerHTML = '';
-                    document.getElementById('podium-1').innerHTML = '';
-                    document.getElementById('podium-2').innerHTML = '';
-                    document.getElementById('podium-3').innerHTML = '';
+                    if(data.length === 0){
+                         tableBody.innerHTML = '<tr><td colspan="4" class="text-center p-8">Belum ada data peringkat.</td></tr>';
+                         // Clear podiums if no data
+                         document.getElementById('podium-1').innerHTML = '';
+                         document.getElementById('podium-2').innerHTML = '';
+                         document.getElementById('podium-3').innerHTML = '';
+                         return;
+                    }
+                    
+                    const podiumElements = [document.getElementById('podium-1'), document.getElementById('podium-2'), document.getElementById('podium-3')];
+                    podiumElements.forEach(p => p.innerHTML = ''); // Clear podiums first
 
-                    // Populate podium
-                    const podiumData = data.slice(0, 3);
-                    podiumData.forEach((player, index) => {
+                    data.slice(0, 3).forEach((player, index) => {
                         const rank = index + 1;
                         const podiumEl = document.getElementById(`podium-${rank}`);
                         if (podiumEl) {
-                             podiumEl.innerHTML = `
-                                <div class="font-bold text-3xl mb-2 text-black">${rank}</div>
-                                <div class="font-semibold text-lg text-black break-words">${player.Nama}</div>`;
+                             podiumEl.innerHTML = `<div class="font-bold text-3xl mb-2 text-black">${rank}</div><div class="font-semibold text-lg text-black break-words">${player.Nama}</div>`;
                         }
                     });
 
-                    // Populate table
                     data.forEach((player, index) => {
                         const rank = index + 1;
                         const tr = document.createElement('tr');
-                        tr.classList.add('border-b', 'border-gray-800');
-                        if (rank <= 3) {
-                            tr.classList.add('font-bold', 'bg-cyan-500/10');
-                        }
-                        tr.innerHTML = `
-                            <td class="p-4 text-center">${rank}</td>
-                            <td class="p-4 whitespace-nowrap">${player.Nama}</td>
-                            <td class="p-4">${player.Kelas}</td>
-                            <td class="p-4 font-bold text-cyan-400">${player.Skor}</td>
-                        `;
+                        tr.className = `border-b border-gray-800 ${rank <= 3 ? 'font-bold bg-cyan-500/10' : ''}`;
+                        tr.innerHTML = `<td class="p-4 text-center">${rank}</td><td class="p-4 whitespace-nowrap">${player.Nama}</td><td class="p-4">${player.Kelas}</td><td class="p-4 font-bold text-cyan-400">${player.Skor}</td>`;
                         tableBody.appendChild(tr);
                     });
-                    
                 } catch (error) {
-                    console.error('Error loading leaderboard:', error);
-                    tableBody.innerHTML = '<tr><td colspan="4" class="text-center p-4">Gagal memuat data.</td></tr>';
-                } finally {
-                    loadingEl.style.display = 'none';
-                    contentEl.classList.remove('hidden');
+                    console.error('Error fetching leaderboard:', error);
+                    tableBody.innerHTML = '<tr><td colspan="4" class="text-center p-8 text-red-500">Gagal memuat data peringkat.</td></tr>';
                 }
             }
 
-            // --- Game 1: Puzzle ---
             const puzzleContainer = document.getElementById('puzzle-container');
             const resetPuzzleBtn = document.getElementById('reset-puzzle');
             const puzzleFeedback = document.getElementById('puzzle-feedback');
-            const pieceCount = 12; // 3x4 grid
+            const pieceCount = 12;
             const imageUrl = 'https://images.unsplash.com/photo-1593640408182-31c70c8268f5?w=400&h=300&fit=crop';
-            let pieces = [];
-            let selectedPiece = null;
+            let pieces = [], selectedPiece = null;
 
             function initPuzzle() {
-                pieces = [];
                 puzzleContainer.innerHTML = '';
+                pieces = [];
                 puzzleFeedback.textContent = '';
+                puzzleContainer.style.border = '2px solid var(--cyan-neon)';
+                selectedPiece = null;
                 for (let i = 0; i < pieceCount; i++) {
                     const piece = document.createElement('div');
-                    piece.classList.add('puzzle-piece');
-                    const row = Math.floor(i / 4);
-                    const col = i % 4;
+                    piece.className = 'w-24 h-[72px] bg-cover bg-center cursor-pointer transition-all duration-300 hover:scale-105 hover:z-10';
                     piece.style.backgroundImage = `url(${imageUrl})`;
-                    piece.style.backgroundPosition = `${(col / 3) * 100}% ${(row / 2) * 100}%`;
-                    piece.dataset.index = i;
+                    const row = Math.floor(i / 4), col = i % 4;
+                    piece.style.backgroundPosition = `${col * 100 / 3}% ${row * 100 / 2}%`;
                     piece.dataset.originalIndex = i;
                     pieces.push(piece);
                 }
-                shuffleAndRender();
-            }
-
-            function shuffleAndRender() {
-                // Fisher-Yates shuffle
-                for (let i = pieces.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [pieces[i], pieces[j]] = [pieces[j], pieces[i]];
-                }
+                pieces.sort(() => Math.random() - 0.5);
                 pieces.forEach(p => {
                     puzzleContainer.appendChild(p);
-                    p.addEventListener('click', onPieceClick);
+                    p.addEventListener('click', () => onPieceClick(p));
                 });
             }
 
-            function onPieceClick(e) {
-                const clickedPiece = e.target;
+            function onPieceClick(clickedPiece) {
                 if (!selectedPiece) {
                     selectedPiece = clickedPiece;
-                    clickedPiece.classList.add('selected');
+                    selectedPiece.style.outline = '2px solid var(--cyan-neon)';
                 } else {
                     if (selectedPiece === clickedPiece) {
-                        selectedPiece.classList.remove('selected');
+                        selectedPiece.style.outline = '';
                         selectedPiece = null;
                         return;
                     }
-
-                    // Swap logic
-                    const selectedIndex = Array.from(puzzleContainer.children).indexOf(selectedPiece);
-                    const clickedIndex = Array.from(puzzleContainer.children).indexOf(clickedPiece);
-                    
-                    const temp = pieces[selectedIndex];
-                    pieces[selectedIndex] = pieces[clickedIndex];
-                    pieces[clickedIndex] = temp;
-                    
-                    puzzleContainer.innerHTML = '';
-                    pieces.forEach(p => puzzleContainer.appendChild(p));
-
-                    selectedPiece.classList.remove('selected');
+                    const selectedIdx = Array.from(puzzleContainer.children).indexOf(selectedPiece);
+                    const clickedIdx = Array.from(puzzleContainer.children).indexOf(clickedPiece);
+                    puzzleContainer.insertBefore(clickedPiece, selectedIdx > clickedIdx ? selectedPiece : selectedPiece.nextSibling);
+                    puzzleContainer.insertBefore(selectedPiece, clickedIdx > selectedIdx ? clickedPiece : clickedPiece.nextSibling);
+                    selectedPiece.style.outline = '';
                     selectedPiece = null;
-                    checkWin();
+                    checkPuzzleCompletion();
                 }
             }
             
-            function checkWin() {
-                const isWin = pieces.every((p, i) => parseInt(p.dataset.originalIndex) === i);
-                if (isWin) {
-                    puzzleFeedback.textContent = "Selamat, kamu berhasil!";
-                    puzzleContainer.style.borderColor = "gold";
+            function checkPuzzleCompletion(){
+                const isSolved = Array.from(puzzleContainer.children).every((p, i) => parseInt(p.dataset.originalIndex) === i);
+                if(isSolved){
+                    puzzleFeedback.textContent = "Selamat, Puzzle Terpecahkan!";
+                    puzzleContainer.style.border = '2px solid #0f0';
                 }
             }
-
             resetPuzzleBtn.addEventListener('click', initPuzzle);
-            initPuzzle();
-
-            // --- Game 2: Binary Challenge ---
-            const binaryNumEl = document.getElementById('binary-challenge-number');
-            const binaryInputEl = document.getElementById('binary-challenge-input');
-            const binarySubmitBtn = document.getElementById('binary-challenge-submit');
-            const binaryFeedbackEl = document.getElementById('binary-challenge-feedback');
+            
+            const decimalNumberEl = document.getElementById('decimal-number'), binaryInput = document.getElementById('binary-input'), binaryFeedback = document.getElementById('binary-feedback'), newBinaryBtn = document.getElementById('new-binary-challenge');
             let currentDecimal;
 
             function newBinaryChallenge() {
                 currentDecimal = Math.floor(Math.random() * 100) + 1;
-                binaryNumEl.textContent = currentDecimal;
-                binaryInputEl.value = '';
-                binaryFeedbackEl.textContent = '';
-                binaryFeedbackEl.classList.remove('text-cyan-400', 'text-red-500');
+                decimalNumberEl.textContent = currentDecimal;
+                binaryInput.value = '';
+                binaryFeedback.textContent = '';
+                binaryInput.focus();
             }
 
-            binarySubmitBtn.addEventListener('click', () => {
-                const userAnswer = binaryInputEl.value.trim();
-                const correctAnswer = currentDecimal.toString(2);
-                if (userAnswer === correctAnswer) {
-                    binaryFeedbackEl.textContent = 'Benar! Kerja bagus!';
-                    binaryFeedbackEl.className = 'mt-4 font-bold h-6 text-cyan-400';
-                    setTimeout(newBinaryChallenge, 1500);
-                } else {
-                    binaryFeedbackEl.textContent = `Salah. Jawaban yang benar adalah ${correctAnswer}`;
-                    binaryFeedbackEl.className = 'mt-4 font-bold h-6 text-red-500';
+            binaryInput.addEventListener('input', () => { binaryInput.value = binaryInput.value.replace(/[^01]/g, ''); });
+            binaryInput.addEventListener('keyup', (e) => {
+                if (e.key === 'Enter') {
+                    const correctAnswer = currentDecimal.toString(2);
+                    if (binaryInput.value === correctAnswer) {
+                        binaryFeedback.textContent = 'Benar! Kerja bagus!';
+                        binaryFeedback.style.color = 'var(--cyan-neon)';
+                        setTimeout(newBinaryChallenge, 1500);
+                    } else {
+                        binaryFeedback.textContent = `Salah. Jawaban: ${correctAnswer}`;
+                        binaryFeedback.style.color = '#f44336';
+                    }
                 }
             });
-            newBinaryChallenge();
+            newBinaryBtn.addEventListener('click', newBinaryChallenge);
 
-            // --- Game 3: Gate Guesser ---
-            const gateNameEl = document.getElementById('gate-guesser-name');
-            const inputAEl = document.getElementById('gate-guesser-input-a');
-            const inputBEl = document.getElementById('gate-guesser-input-b');
-            const answerOptions = document.querySelectorAll('.gate-answer-option');
-            const game3Feedback = document.getElementById('gate-guesser-feedback');
-            
-            const gates = ['AND', 'OR', 'NAND', 'NOR', 'XOR', 'XNOR'];
-            let currentGateName;
-            let valA, valB;
-            let correctAnswer;
+            const gateNameEl = document.getElementById('gate-name'), inputAEl = document.getElementById('gate-input-a'), inputBEl = document.getElementById('gate-input-b'), gateFeedbackEl = document.getElementById('gate-feedback'), newGateBtn = document.getElementById('new-gate-challenge'), gateAnswerBtns = document.querySelectorAll('.gate-answer');
+            const gates = ['AND', 'OR', 'NAND', 'NOR', 'XOR'];
+            let currentGate, inputA, inputB, gateCorrectAnswer;
 
-            function calculateCorrectOutput(gate, a, b) {
-                switch (gate) {
-                    case 'AND': return a & b;
-                    case 'OR': return a | b;
-                    case 'NAND': return !(a & b) ? 1 : 0;
-                    case 'NOR': return !(a | b) ? 1 : 0;
-                    case 'XOR': return a ^ b;
-                    case 'XNOR': return !(a ^ b) ? 1 : 0;
-                    default: return 0;
+            function newGateChallenge() {
+                currentGate = gates[Math.floor(Math.random() * gates.length)];
+                inputA = Math.round(Math.random());
+                inputB = Math.round(Math.random());
+                gateNameEl.textContent = currentGate;
+                inputAEl.textContent = inputA;
+                inputBEl.textContent = inputB;
+                gateFeedbackEl.textContent = '';
+                switch(currentGate) {
+                    case 'AND': gateCorrectAnswer = (inputA && inputB) ? 1 : 0; break;
+                    case 'OR': gateCorrectAnswer = (inputA || inputB) ? 1 : 0; break;
+                    case 'NAND': gateCorrectAnswer = !(inputA && inputB) ? 1 : 0; break;
+                    case 'NOR': gateCorrectAnswer = !(inputA || inputB) ? 1 : 0; break;
+                    case 'XOR': gateCorrectAnswer = (inputA !== inputB) ? 1 : 0; break;
                 }
             }
 
-            function newGateGuesserChallenge() {
-                currentGateName = gates[Math.floor(Math.random() * gates.length)];
-                valA = Math.round(Math.random());
-                valB = Math.round(Math.random());
-                correctAnswer = calculateCorrectOutput(currentGateName, valA, valB);
-                
-                gateNameEl.textContent = currentGateName;
-                inputAEl.textContent = valA;
-                inputBEl.textContent = valB;
-                game3Feedback.textContent = '';
-            }
-
-            answerOptions.forEach(button => {
-                button.addEventListener('click', () => {
-                    const userAnswer = parseInt(button.textContent);
-                    if (userAnswer === correctAnswer) {
-                        game3Feedback.textContent = 'Benar! Jawabanmu Tepat!';
-                        game3Feedback.className = 'mt-4 font-bold h-6 text-cyan-400';
-                        setTimeout(newGateGuesserChallenge, 1500);
+            gateAnswerBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    if (parseInt(btn.dataset.answer) === gateCorrectAnswer) {
+                        gateFeedbackEl.textContent = 'Benar!';
+                        gateFeedbackEl.style.color = 'var(--cyan-neon)';
+                        setTimeout(newGateChallenge, 1500);
                     } else {
-                        game3Feedback.textContent = 'Salah, coba lagi!';
-                        game3Feedback.className = 'mt-4 font-bold h-6 text-red-500';
+                        gateFeedbackEl.textContent = `Salah! Outputnya adalah ${gateCorrectAnswer}`;
+                        gateFeedbackEl.style.color = '#f44336';
                     }
                 });
             });
+            newGateBtn.addEventListener('click', newGateChallenge);
 
-            newGateGuesserChallenge();
-
+            initPuzzle();
+            newBinaryChallenge();
+            newGateChallenge();
         });
     </script>
 </body>
 </html>
-
-
-
 
