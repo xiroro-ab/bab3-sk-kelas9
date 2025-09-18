@@ -143,7 +143,7 @@
     <!-- REVISED: Default state is hidden on all screens -->
     <nav id="sidebar" class="glassmorphism fixed top-0 left-0 h-full w-72 z-50 transform -translate-x-full flex flex-col p-4 shadow-lg shadow-cyan-500/10 transition-transform duration-300">
         <div class="text-2xl font-bold neon-glow text-center mb-8">
-            <a href="#" class="nav-link" data-target="beranda">Informatika KLS 9</a>
+            <a href="#" class="nav-link" data-target="beranda">Sistem Komputer</a>
         </div>
         
         <div class="flex-grow overflow-y-auto sidebar-scroll pr-2">
@@ -447,7 +447,7 @@
             <section id="game1" class="content-section text-center">
                  <h2 class="text-3xl font-bold neon-glow mb-4">Game 1: Puzzle Komponen</h2>
                  <p class="mb-6 max-w-2xl mx-auto">Susun kembali potongan gambar komponen komputer ini. Klik satu potongan lalu klik potongan lain untuk menukar posisi mereka.</p>
-                 <div id="puzzle-container" class="grid grid-cols-4 gap-1 max-w-md mx-auto border-2 border-cyan-400 p-1 rounded-lg"></div>
+                 <div id="puzzle-container" class="grid grid-cols-4 w-[384px] mx-auto border-2 border-cyan-400 rounded-lg"></div>
                  <button id="reset-puzzle" class="glassmorphism px-6 py-2 rounded-lg hover:bg-cyan-500/20 transition mt-6">Reset Puzzle</button>
                  <p id="puzzle-feedback" class="mt-4 text-cyan-400 font-bold h-6"></p>
             </section>
@@ -825,7 +825,7 @@
             const resetPuzzleBtn = document.getElementById('reset-puzzle');
             const puzzleFeedback = document.getElementById('puzzle-feedback');
             const pieceCount = 12;
-            const imageUrl = 'https://images.unsplash.com/photo-1593640408182-31c70c8268f5?w=400&h=300&fit=crop';
+            const imageUrl = 'https://images.pexels.com/photos/1779487/pexels-photo-1779487.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&dpr=1';
             let pieces = [], selectedPiece = null;
 
             function initPuzzle() {
@@ -834,12 +834,29 @@
                 puzzleFeedback.textContent = '';
                 puzzleContainer.style.border = '2px solid var(--cyan-neon)';
                 selectedPiece = null;
+
+                const puzzleWidth = 384; // 4 pieces * 96px (w-24)
+                const puzzleHeight = 216; // 3 pieces * 72px (h-[72px])
+                const pieceWidth = 96;
+                const pieceHeight = 72;
+
                 for (let i = 0; i < pieceCount; i++) {
                     const piece = document.createElement('div');
-                    piece.className = 'w-24 h-[72px] bg-cover bg-center cursor-pointer transition-all duration-300 hover:scale-105 hover:z-10';
+                    // REMOVED bg-cover and bg-center to allow precise positioning
+                    piece.className = 'w-24 h-[72px] cursor-pointer transition-all duration-300 hover:scale-105 hover:z-10';
                     piece.style.backgroundImage = `url(${imageUrl})`;
-                    const row = Math.floor(i / 4), col = i % 4;
-                    piece.style.backgroundPosition = `${col * 100 / 3}% ${row * 100 / 2}%`;
+                    
+                    // Set the background size to the total dimensions of the puzzle
+                    piece.style.backgroundSize = `${puzzleWidth}px ${puzzleHeight}px`;
+
+                    const row = Math.floor(i / 4);
+                    const col = i % 4;
+                    
+                    // Calculate the negative offset to show the correct piece of the image
+                    const xPos = -(col * pieceWidth);
+                    const yPos = -(row * pieceHeight);
+                    piece.style.backgroundPosition = `${xPos}px ${yPos}px`;
+                    
                     piece.dataset.originalIndex = i;
                     pieces.push(piece);
                 }
@@ -850,20 +867,33 @@
                 });
             }
 
+            // Helper function to swap two nodes in the DOM
+            function swapNodes(node1, node2) {
+                const parent = node1.parentNode;
+                const temp = document.createElement('div');
+                parent.insertBefore(temp, node1);
+                parent.insertBefore(node1, node2);
+                parent.insertBefore(node2, temp);
+                parent.removeChild(temp);
+            }
+
             function onPieceClick(clickedPiece) {
                 if (!selectedPiece) {
+                    // First piece selected
                     selectedPiece = clickedPiece;
                     selectedPiece.style.outline = '2px solid var(--cyan-neon)';
                 } else {
+                    // Second piece selected, perform swap
                     if (selectedPiece === clickedPiece) {
+                        // Deselect if the same piece is clicked again
                         selectedPiece.style.outline = '';
                         selectedPiece = null;
                         return;
                     }
-                    const selectedIdx = Array.from(puzzleContainer.children).indexOf(selectedPiece);
-                    const clickedIdx = Array.from(puzzleContainer.children).indexOf(clickedPiece);
-                    puzzleContainer.insertBefore(clickedPiece, selectedIdx > clickedIdx ? selectedPiece : selectedPiece.nextSibling);
-                    puzzleContainer.insertBefore(selectedPiece, clickedIdx > selectedIdx ? clickedPiece : clickedPiece.nextSibling);
+                    
+                    swapNodes(selectedPiece, clickedPiece);
+
+                    // Reset selection and check if puzzle is solved
                     selectedPiece.style.outline = '';
                     selectedPiece = null;
                     checkPuzzleCompletion();
@@ -948,4 +978,8 @@
     </script>
 </body>
 </html>
+
+
+
+
 
